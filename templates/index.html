@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AI Resume Scanner</title>
+<link rel="stylesheet" href="/static/css/style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- TITLEBAR -->
+<div class="titlebar">
+ 
+  <div class="tb-title">resume_scanner.py — AI Resume Analyzer</div>
+ 
+</div>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-icon active" title="Explorer">&#128193;</div>
+    
+  </div>
+
+  <!-- PANEL -->
+  <div class="panel">
+    <div class="panel-header">
+      <span>PIPELINE</span>
+      <span id="pipeline-status" class="status-dim">ready</span>
+    </div>
+    <div class="panel-body">
+      <div id="step-tree"></div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('upload')" id="tab-upload">
+        <span>&#128196;</span> upload.py <span class="dot-ext">.upload</span>
+      </div>
+      <div class="tab" onclick="switchTab('results')" id="tab-results" style="display:none">
+        <span>&#128202;</span> results.json <span class="dot-ext">.out</span>
+      </div>
+      <div class="tab" onclick="switchTab('terminal')" id="tab-terminal" style="display:none">
+        <span>&#128187;</span> terminal
+      </div>
+    </div>
+
+    <!-- UPLOAD TAB -->
+    <div class="content" id="content-upload">
+      <div class="breadcrumb">
+        <span>resume_scanner</span><span class="bc-sep">/</span>
+        <span>src</span><span class="bc-sep">/</span>
+        <span class="bc-active">upload.py</span>
+      </div>
+
+      <div class="section-title">01 — resume input</div>
+
+      <div class="upload-zone" id="upload-zone"
+           ondragover="event.preventDefault(); this.classList.add('drag')"
+           ondragleave="this.classList.remove('drag')"
+           ondrop="handleDrop(event)">
+        <input type="file" class="upload-input" id="file-input"
+               accept=".txt,.pdf,.doc,.docx" onchange="handleFile(event)">
+        <div class="upload-icon">&#128196;</div>
+        <div class="upload-title">Drop your resume here</div>
+        <div class="upload-sub">supports .txt · .pdf · .docx — or paste text below</div>
+      </div>
+
+      <div class="mt16">
+        <textarea id="resume-text"
+                  class="code-textarea"
+                  style="height:140px;"
+                  placeholder="...or paste your resume text here directly"></textarea>
+      </div>
+
+      <div class="section-title">02 — job description</div>
+
+      <div class="job-paste">
+        <div class="jp-header"><div class="jp-dot"></div> job_description.txt</div>
+        <textarea class="job-textarea" id="job-text"
+                  placeholder="Paste the job description you are targeting (optional but recommended for ATS scoring)..."></textarea>
+      </div>
+
+      <div class="section-title">03 — analysis options</div>
+
+      <div class="options-row">
+        <label class="opt-label">
+          <input type="checkbox" id="opt-ats" checked> ATS Scoring
+        </label>
+        <label class="opt-label">
+          <input type="checkbox" id="opt-gaps" checked> Gap Detection
+        </label>
+        <label class="opt-label">
+          <input type="checkbox" id="opt-rewrite" checked> Rewrite Tips
+        </label>
+        <label class="opt-label">
+          <input type="checkbox" id="opt-keywords" checked> Keyword Match
+        </label>
+      </div>
+
+      <div class="flex mt24">
+        <button class="btn" id="scan-btn" onclick="startScan()">&#9654; Run Scanner</button>
+        <button class="btn btn-ghost" onclick="loadDemo()">Load Demo Resume</button>
+      </div>
+
+      <div id="progress-wrap" style="display:none; margin-top:24px;">
+        <div class="loading-bar">
+          <div class="loading-fill" id="progress-bar" style="width:0%"></div>
+        </div>
+        <div class="progress-label" id="progress-label">Initializing...</div>
+      </div>
+    </div>
+
+    <!-- RESULTS TAB -->
+    <div class="content" id="content-results" style="display:none">
+      <div id="results-inner"></div>
+    </div>
+
+    <!-- TERMINAL TAB -->
+    <div class="content" id="content-terminal" style="display:none">
+      <div class="terminal">
+        <div class="term-header">
+          <div class="pulse-dot" id="term-dot" style="background:var(--text3)"></div>
+          bash — resume_scanner
+        </div>
+        <div class="term-body" id="term-body">
+          <div class="term-line t-dim">$ python app.py</div>
+          <div class="term-line t-green">&#10003; AI engine loaded</div>
+          <div class="term-line t-dim">$ waiting for input...</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<script src="/static/js/main.js"></script>
+</body>
+</html>
